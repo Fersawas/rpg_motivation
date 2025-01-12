@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    "drf_spectacular",
     "djoser",
     "user",
     "api"
@@ -145,12 +146,15 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 
 }
 
 DJOSER = {
     'SERIALIZERS': {
         'user_create': 'api.serializers.UserCreateSerializer',
+        'me': 'api.serializers.UserRetrieveSerializer',
+        'current_user': 'api.serializers.UserRetrieveSerializer',
     }
 }
 
@@ -158,8 +162,17 @@ DJOSER = {
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'RPG Motivation API',
+    'VERSION': '1.0.0',
+    'DESCRIPTION': "Make Your Dream Come True",
+    'SERVE_INCLUDE_SCHEMA': False,
+    
+}

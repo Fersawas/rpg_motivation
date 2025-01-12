@@ -16,10 +16,15 @@ class UserCreateSerializer(serializers.ModelSerializer):
     )
     password = serializers.CharField(write_only=True, 
                                        style={'input_type': 'password'},
+                                       max_length=PASSWORD_LENGTH,
                                        label='Пароль')
     password_2 = serializers.CharField(write_only=True,
                                      style={'input_type': 'password'},
+                                     max_length=PASSWORD_LENGTH,
                                      label='Повторите пароль')
+    first_name = serializers.CharField(max_length=NAME_LENGHT)
+    last_name = serializers.CharField(max_length=NAME_LENGHT)
+    
     class Meta:
         model = User
         fields = [
@@ -56,3 +61,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+    
+
+class UserRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'username',
+            'first_name',
+            'last_name'
+        ]
