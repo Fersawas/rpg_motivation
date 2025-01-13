@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "djoser",
     "user",
-    "api"
+    "api",
+    "character"
 ]
 
 MIDDLEWARE = [
