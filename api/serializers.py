@@ -49,7 +49,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
                 {'ERROR': USER_VALIDATORS['password']}
             )
         return data 
-        
 
     def create(self, validated_data):
         user = UserMain.objects.create_user(
@@ -109,7 +108,7 @@ class CharacterSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['user'] = UserRetrieveSerializer(instance=instance.user, context=self.context) 
+        representation['user'] = UserRetrieveSerializer(instance=instance.user, context=self.context).data
         return representation
 
 
