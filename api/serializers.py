@@ -90,28 +90,6 @@ class EquipmentSerializer(serializers.ModelSerializer):
         ]
 
 
-class CharacterSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    class Meta:
-        model = Character
-        fields = [
-            'user',
-            'user_info',
-            'title',
-            'description',
-            'type',
-            'strenght',
-            'intelegence',
-            'agility',
-            'wisdom'
-        ]
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['user'] = UserRetrieveSerializer(instance=instance.user, context=self.context).data
-        return representation
-
-
 class CharacterEquipmentSerializer(serializers.ModelSerializer):
     character = serializers.PrimaryKeyRelatedField(queryset=Character.objects.all())
     hands = serializers.PrimaryKeyRelatedField(queryset=Equipment.objects.all())
@@ -128,4 +106,21 @@ class CharacterEquipmentSerializer(serializers.ModelSerializer):
         representation['chest'] = EquipmentSerializer(instance=instance.chest, context=self.context).data
         representation['legs'] = EquipmentSerializer(instance=instance.legs, context=self.context).data
         representation['weapon'] = EquipmentSerializer(instance=instance.weapon, context=self.context).data
+        return representation
+
+class CharacterSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    class Meta:
+        model = Character
+        fields = [
+            'user',
+            'strenght',
+            'intelegence',
+            'agility',
+            'wisdom',
+        ]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['user'] = UserRetrieveSerializer(instance=instance.user, context=self.context).data
         return representation

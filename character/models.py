@@ -39,15 +39,15 @@ class Character(models.Model):
 
 class CharacterEquipment(models.Model):
     character = models.OneToOneField(Character, on_delete=models.CASCADE,
-                                     related_name='char_equipment')
+                                     related_name='char_equipment', null=True, blank=True)
     hands = models.OneToOneField(Equipment, on_delete=models.CASCADE,
-                                 related_name='char_eq_hands')
+                                 related_name='char_eq_hands', null=True, blank=True)
     chest = models.OneToOneField(Equipment, on_delete=models.CASCADE,
-                                 related_name='char_eq_chest')
+                                 related_name='char_eq_chest', null=True, blank=True)
     legs = models.OneToOneField(Equipment, on_delete=models.CASCADE,
-                                related_name='char_eq_legs')
+                                related_name='char_eq_legs', null=True, blank=True)
     weapon = models.OneToOneField(Equipment, on_delete=models.CASCADE,
-                                  related_name='char_eq_weap') 
+                                  related_name='char_eq_weap', null=True, blank=True) 
     
     def clean(self) -> None:
         if self.hands and self.hands.type != 'H':
