@@ -84,8 +84,6 @@ WSGI_APPLICATION = "rpg_motivation.wsgi.application"
 
 # Celery settings
 
-#CELERY_BROKER_URL = "redis://172.23.94.236:6379"
-#CELERY_RESULT_BACKEND = "redis://172.23.94.236:6379"
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
 # Database
@@ -101,10 +99,10 @@ TEST_DATABASE = {
 PROD_DATABASE = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME", 'django'),
-        "USER": os.getenv("DB_USER", 'django'),
-        "PASSWORD": os.getenv("DB_PASSWORD", 'django'),
-        "HOST": os.getenv("DB_HOST", '172.23.80.1'),
+        "NAME": os.getenv("DB_NAME", "django"),
+        "USER": os.getenv("DB_USER", "django"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "django"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", 5432),
     }
 }
