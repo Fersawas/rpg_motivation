@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 
 from django.core.exceptions import ValidationError
 
-from contants import CHAR_EQUIP
+from contants import (CHAR_EQUIP, FIELD_OPTION, DEF_POINTS_CHAR,
+                      DEF_POINTS_EQ, EQUIP_LENGTH, EQUIP_TYPE_LENGTH)
 
 
 User = get_user_model()
@@ -17,37 +18,37 @@ class Equipment(models.Model):
         ('W', 'Weapon')
     ]
 
-    title = models.CharField(verbose_name='Название', max_length=100)
-    description = models.CharField(verbose_name='Описание', max_length=100)
-    type = models.CharField(verbose_name='Тип', max_length=50, choices=EQUIP_CHOICES)
+    title = models.CharField(verbose_name='Название', max_length=EQUIP_LENGTH)
+    description = models.CharField(verbose_name='Описание', max_length=EQUIP_LENGTH)
+    type = models.CharField(verbose_name='Тип', max_length=EQUIP_TYPE_LENGTH, choices=EQUIP_CHOICES)
     
-    bonus_strenght = models.IntegerField(verbose_name='Дополниткльная сила', default=0)
-    bonus_intelegence = models.IntegerField(verbose_name='Дополнительный интеллект', default=0)
-    bonus_agility = models.IntegerField(verbose_name='Доплнительная ловкость', default=0)
-    bonus_wisdom = models.IntegerField(verbose_name='Дополнительная мудрость', default=0)
+    bonus_strenght = models.IntegerField(verbose_name='Дополниткльная сила', default=DEF_POINTS_EQ)
+    bonus_intelegence = models.IntegerField(verbose_name='Дополнительный интеллект', default=DEF_POINTS_EQ)
+    bonus_agility = models.IntegerField(verbose_name='Доплнительная ловкость', default=DEF_POINTS_EQ)
+    bonus_wisdom = models.IntegerField(verbose_name='Дополнительная мудрость', default=DEF_POINTS_EQ)
 
 
 
 class Character(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,
                                 related_name='character')
-    strenght = models.IntegerField(default=5)
-    intelegence = models.IntegerField(default=5)
-    agility = models.IntegerField(default=5)
-    wisdom = models.IntegerField(default=5)
+    strenght = models.IntegerField(default=DEF_POINTS_CHAR)
+    intelegence = models.IntegerField(default=DEF_POINTS_CHAR)
+    agility = models.IntegerField(default=DEF_POINTS_CHAR)
+    wisdom = models.IntegerField(default=DEF_POINTS_CHAR)
 
 
 class CharacterEquipment(models.Model):
     character = models.OneToOneField(Character, on_delete=models.CASCADE,
-                                     related_name='char_equipment', null=True, blank=True)
+                                     related_name='char_equipment', **FIELD_OPTION)
     hands = models.OneToOneField(Equipment, on_delete=models.CASCADE,
-                                 related_name='char_eq_hands', null=True, blank=True)
+                                 related_name='char_eq_hands', **FIELD_OPTION)
     chest = models.OneToOneField(Equipment, on_delete=models.CASCADE,
-                                 related_name='char_eq_chest', null=True, blank=True)
+                                 related_name='char_eq_chest', **FIELD_OPTION)
     legs = models.OneToOneField(Equipment, on_delete=models.CASCADE,
-                                related_name='char_eq_legs', null=True, blank=True)
+                                related_name='char_eq_legs', **FIELD_OPTION)
     weapon = models.OneToOneField(Equipment, on_delete=models.CASCADE,
-                                  related_name='char_eq_weap', null=True, blank=True) 
+                                  related_name='char_eq_weap', **FIELD_OPTION) 
     
     def clean(self) -> None:
         if self.hands and self.hands.type != 'H':
