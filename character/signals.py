@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
-from character.tasks import create_character_task, create_character_equipment_task
+from character.tasks import create_character_task, create_character_equip_invent_task
 
 from character.models import Character
 
@@ -14,6 +14,6 @@ def create_character(sender, instance, created, **kwargs):
         create_character_task.delay(instance.id)
 
 @receiver(post_save, sender=Character)
-def create_character_equipment(sender, instance, created, **kwargs):
+def create_character_equipment_inventory(sender, instance, created, **kwargs):
     if created:
-        create_character_equipment_task(instance.id)
+        create_character_equip_invent_task(instance.id)

@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
+from django.db.models import Count, Sum
 
 from user.models import UserMain
-from character.models import Equipment, Character, CharacterEquipment
+from character.models import Equipment, Character, CharacterEquipment, Inventory
 from contants import NAME_LENGHT, PASSWORD_LENGTH, USER_LENGTH, USER_VALIDATORS, EQUIPMENT
 
 User = get_user_model()
@@ -99,6 +100,13 @@ class CharacterEquipmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CharacterEquipment
+        fields = [
+            'character',
+            'hands',
+            'chest',
+            'legs',
+            'weapon'
+        ]
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -124,3 +132,38 @@ class CharacterSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['user'] = UserRetrieveSerializer(instance=instance.user, context=self.context).data
         return representation
+
+
+class InvetEquipmentSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    item_type = serializers.CharField()
+    item_count = serializers.IntegerField()
+    details = EquipmentSerializer(many=True)
+
+
+
+class InvetorySerializer(serializers.ModelSerializer):
+    equipment = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Inventory
+        fields = [
+            'equipment'
+        ]
+
+    def get_equipment(self, obj):
+        group_equipment = obj.equipment.values('title', 'type').annotate(item_count=Count('title'))
+        
+        result = []
+        for equipment in group_equipment:
+            items = obj.equipment.filter(title=equipment['title'])
+            details_serializer = EquipmentSerializer(items, many=True)
+            result.append({
+                'title': equipment['title'],
+                'item_type': equipment['type'],
+                'item_count': equipment['item_count'],
+                'details': details_serializer.data
+            })
+            serializer = InvetEquipmentSerializer(result, many=True)
+            return serializer.data
+

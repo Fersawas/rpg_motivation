@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
 from contants import (CHAR_EQUIP, FIELD_OPTION, DEF_POINTS_CHAR,
-                      DEF_POINTS_EQ, EQUIP_LENGTH, EQUIP_TYPE_LENGTH)
+                      DEF_POINTS_EQ, EQUIP_LENGTH, EQUIP_TYPE_LENGTH, MONEY)
 
 
 User = get_user_model()
@@ -41,13 +41,13 @@ class Character(models.Model):
 class CharacterEquipment(models.Model):
     character = models.OneToOneField(Character, on_delete=models.CASCADE,
                                      related_name='char_equipment', **FIELD_OPTION)
-    hands = models.OneToOneField(Equipment, on_delete=models.CASCADE,
+    hands = models.ForeignKey(Equipment, on_delete=models.CASCADE,
                                  related_name='char_eq_hands', **FIELD_OPTION)
-    chest = models.OneToOneField(Equipment, on_delete=models.CASCADE,
+    chest = models.ForeignKey(Equipment, on_delete=models.CASCADE,
                                  related_name='char_eq_chest', **FIELD_OPTION)
-    legs = models.OneToOneField(Equipment, on_delete=models.CASCADE,
+    legs = models.ForeignKey(Equipment, on_delete=models.CASCADE,
                                 related_name='char_eq_legs', **FIELD_OPTION)
-    weapon = models.OneToOneField(Equipment, on_delete=models.CASCADE,
+    weapon = models.ForeignKey(Equipment, on_delete=models.CASCADE,
                                   related_name='char_eq_weap', **FIELD_OPTION) 
     
     def clean(self) -> None:
@@ -74,3 +74,12 @@ class CharacterEquipment(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         super(CharacterEquipment, self).save(*args, **kwargs)
+
+
+class Inventory(models.Model):
+    character = models.OneToOneField(Character, on_delete=models.CASCADE,
+                                     related_name='char_invetory', **FIELD_OPTION)
+    
+    equipment = models.ManyToManyField(Equipment, related_name='char_inv', **FIELD_OPTION)
+
+    money = models.IntegerField(default=MONEY)
