@@ -10,8 +10,11 @@ from rest_framework.decorators import action
 
 
 from character.models import Character, Equipment, CharacterEquipment, Inventory
-from api.serializers import CharacterSerializer, CharacterEquipmentSerializer, EquipmentSerializer, InvetorySerializer
+from quest.models import Quest, UserQuest
+from api.serializers import (CharacterSerializer, CharacterEquipmentSerializer, EquipmentSerializer,
+                             InvetorySerializer, QuestSerializer, UserQuestSerializer)
 from api.permissions import IsAuthor
+from contants import USER_QUEST
 
 
 User = get_user_model()
@@ -37,4 +40,29 @@ class InvetoryViewSet(viewsets.ModelViewSet):
                 character = user.character
             )
         return Inventory.objects.filter(pk=inventory.pk)
-            
+
+
+class QuestViewSet(viewsets.ModelViewSet):
+    queryset = Quest.objects.all()
+    permission_classes = [IsAuthenticated, ]
+    http_method_names = ['get', 'post']
+
+    def get_serializer_class(self):
+        if self.action == 'take_quest':
+            return UserQuestSerializer
+        return QuestSerializer
+
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @action(detail=True, methods=['post'], url_path='take_quest')
+    def take_quest(self, request, pk):
+        user = request.user
+        quest = get_object_or_404(Quest, pk=pk)
+
+        if UserQuest.objects.filter(user=user, quest=quest).exists():
+            return Response(USER_QUEST['exists'], status=status.HTTP_400_BAD_REQUEST)
+
+        user_quest = UserQuest.objects.create(user=user, quest=quest)
+        serializer = self.get_serializer_class()(user_quest)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

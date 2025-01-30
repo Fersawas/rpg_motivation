@@ -5,6 +5,7 @@ from django.db.models import Count, Sum
 
 from user.models import UserMain
 from character.models import Equipment, Character, CharacterEquipment, Inventory
+from quest.models import Quest, UserQuest
 from contants import NAME_LENGHT, PASSWORD_LENGTH, USER_LENGTH, USER_VALIDATORS, EQUIPMENT
 
 User = get_user_model()
@@ -167,3 +168,28 @@ class InvetorySerializer(serializers.ModelSerializer):
             serializer = InvetEquipmentSerializer(result, many=True)
             return serializer.data
 
+
+class QuestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quest
+        fields = [
+            'title',
+            'description',
+            'task_time',
+            'bonus_power_points',
+            'bonus_power'
+        ]
+
+
+class UserQuestSerializer(serializers.ModelSerializer):
+    user = UserRetrieveSerializer(read_only=True)
+    quest = QuestSerializer()
+    class Meta:
+        model = UserQuest
+        fields = [
+            'user',
+            'quest',
+            'start_quest_time',
+            'end_quest_time',
+            'status'
+        ]

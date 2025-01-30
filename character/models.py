@@ -80,6 +80,6 @@ class Inventory(models.Model):
     character = models.OneToOneField(Character, on_delete=models.CASCADE,
                                      related_name='char_invetory', **FIELD_OPTION)
     
-    equipment = models.ManyToManyField(Equipment, related_name='char_inv', **FIELD_OPTION)
+    equipment = models.ManyToManyField(Equipment, related_name='char_inv')
 
     money = models.IntegerField(default=MONEY)
