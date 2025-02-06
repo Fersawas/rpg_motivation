@@ -7,13 +7,12 @@ from api.views import CharacterEquipmentViewSet, InvetoryViewSet, QuestViewSet
 
 router = SimpleRouter()
 
-router.register('character', CharacterEquipmentViewSet, 'character')
-router.register('inventory', InvetoryViewSet, 'inventory')
-router.register('quest', QuestViewSet, 'quest')
+router.register("character", CharacterEquipmentViewSet, "character")
+router.register("inventory", InvetoryViewSet, "inventory")
+router.register("quest", QuestViewSet, "quest")
 
 urlpatterns = [
-    path('', include(router.urls)),
-    re_path('^auth/', include('djoser.urls')),
-    re_path('^auth/', include('djoser.urls.authtoken')),
-    path('quest', QuestViewSet.as_view({'get': 'list'})),
+    path("", include(router.urls)),
+    re_path("^auth/", include("djoser.urls")),
+    re_path("^auth/", include("djoser.urls.authtoken")),
 ]

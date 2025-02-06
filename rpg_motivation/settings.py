@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os 
+import os
 
 from dotenv import load_dotenv
 
@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", 'Is that a secret?')
+SECRET_KEY = os.getenv("SECRET_KEY", "Is that a secret?")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,11 +45,12 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",
+    "django_filters",
     "djoser",
     "quest",
     "user",
     "api",
-    "character"
+    "character",
 ]
 
 MIDDLEWARE = [
@@ -108,7 +109,11 @@ PROD_DATABASE = {
     }
 }
 
-DATABASES = TEST_DATABASE if os.getenv("TEST_DATABASE", default=False) == 'True' else PROD_DATABASE 
+DATABASES = (
+    TEST_DATABASE
+    if os.getenv("TEST_DATABASE", default=False) == "True"
+    else PROD_DATABASE
+)
 
 
 # Password validation
@@ -153,14 +158,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 DJOSER = {
-    'SERIALIZERS': {
-        'user_create': 'api.serializers.UserCreateSerializer',
-        'me': 'api.serializers.UserRetrieveSerializer',
-        'current_user': 'api.serializers.UserRetrieveSerializer',
+    "SERIALIZERS": {
+        "user_create": "api.serializers.UserCreateSerializer",
+        "me": "api.serializers.UserRetrieveSerializer",
+        "current_user": "api.serializers.UserRetrieveSerializer",
     }
 }
 
@@ -168,7 +173,7 @@ DJOSER = {
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -176,9 +181,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'RPG Motivation API',
-    'VERSION': '1.0.0',
-    'DESCRIPTION': "Make Your Dream Come True",
-    'SERVE_INCLUDE_SCHEMA': False,
-    
+    "TITLE": "RPG Motivation API",
+    "VERSION": "1.0.0",
+    "DESCRIPTION": "Make Your Dream Come True",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
